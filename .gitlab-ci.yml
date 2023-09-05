@@ -1,0 +1,58 @@
+stages:
+  - test
+  - build
+  - deploy
+
+build:
+  stage: build
+  image: ubuntu
+  before_script:
+    - apt update
+    - apt install -y zip python3-pip
+    - mkdir $CI_PROJECT_NAME
+    - cp -r src $CI_PROJECT_NAME
+    - pip install -t $CI_PROJECT_NAME -r requirements.txt
+    - cd $CI_PROJECT_NAME
+  script:
+    - zip -r $CI_PROJECT_NAME.zip .
+  artifacts:
+    paths:
+      - $CI_PROJECT_NAME/$CI_PROJECT_NAME.zip
+
+deploy:
+  stage: deploy
+  rules:
+    # disable merge requests pipelines
+    # branch pipelines for MRs will run anyway - removes double-pipelines
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: never
+    # auto-deploy default branch
+    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
+    # allow manual run for everything other
+    - when: manual
+  image:
+    name: amazon/aws-cli
+    entrypoint: [""]
+  script:
+    - aws --version
+    - aws lambda update-function-code --function-name JiraCalamari --zip-file fileb://$CI_PROJECT_NAME/$CI_PROJECT_NAME.zip --region eu-central-1
+
+test:sonarqube-check:
+  stage: test
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - sonar-scanner
+  allow_failure: true
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH
+      when: always
+    - when: manual
