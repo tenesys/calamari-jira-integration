@@ -96,12 +96,12 @@ def _prepare_conflicts_message(conflicts: dict) -> str:
     """
 
     for email, worklogs in conflicts.items():
-        for date, amount in worklogs:
+        for w in worklogs:
             message += f"""
             <tr>
                 <td>{email}</td>
-                <td>{date}</td>
-                <td>{amount}</td>
+                <td>{w['date']}</td>
+                <td>{w['amount']}</td>
             </tr>
             """
 
