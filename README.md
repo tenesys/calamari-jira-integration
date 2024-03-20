@@ -4,6 +4,7 @@ This integration is syncing absences and timesheets between Jira and Calamari.
 ## How to build and run
 ```
 pip3 install -r requirements.txt -t build
+cp -r src build
 cd build
 zip -r ../build.zip .
 ```
