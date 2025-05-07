@@ -28,7 +28,7 @@ def jira_api_call(path: str, method: str = "GET", body: dict|None = None) -> dic
 def tempo_api_call(path: str|None = None, method: str = "GET", body: dict|None = None, next_url: str|None = None) -> dict:
     """ Make a call to Tempo API """
 
-    url = f"https://api.tempo.io/core/3/{path}" if next_url is None else next_url
+    url = f"https://api.tempo.io/4/{path}" if next_url is None else next_url
     res = requests.request(
         method, url,
         headers={
@@ -96,13 +96,13 @@ def sum_worklogs(worklogs: list) -> dict:
 
 
 def create_absence_worklog(
-    issue_key: str, time: int, day: str, user: str
+    issue_id: str, time: int, day: str, user: str
 ):
     """ Create worklog in Tempo """
 
     worklog_desc = settings.get("jira_absence_worklog_description", "Absence")
     body = {
-        "issueKey": issue_key,
+        "issueId": issue_id,
         "timeSpentSeconds": time,
         "billableSeconds": time,
         "startDate": day,
