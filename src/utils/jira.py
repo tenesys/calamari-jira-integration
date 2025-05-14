@@ -71,7 +71,7 @@ def fetch_worklogs(jira_username: str, date_from: str, date_to: str) -> list:
                 "accountId": record["author"]["accountId"],
                 "displayName": record["author"]["displayName"],
                 "email": get_user_email(record["author"]["accountId"]),
-                "issueKey": record["issue"]["key"],
+                "issueId": record["issue"]["id"],
             })
 
         if "metadata" not in response or "next" not in response["metadata"]:
@@ -87,7 +87,7 @@ def sum_worklogs(worklogs: list) -> dict:
     absence_issue = settings.get("jira_absence_issue")
 
     for worklog in worklogs:
-        if worklog["issueKey"] == absence_issue:
+        if worklog["issueId"] == absence_issue:
             continue
 
         result[worklog["startDate"]] += worklog["timeSpentSeconds"] / 3600
