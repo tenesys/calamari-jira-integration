@@ -25,7 +25,7 @@ List of available settings:
 | `jira_api_url`                       | Jira API URL, e.g. `example.atlassian.net`                                                  |               |
 | `jira_api_user`                      | Jira API username                                                                           |               |
 | `jira_api_token`                     | Jira API token                                                                              |               |
-| `jira_absence_issue`                 | Jira issue key for absence worklogs, e.g. `ABC-123`                                         |               |
+| `jira_absence_issue`                 | Jira issue ID for absence worklogs (**NOT the issue key!** - IDs are numerical)             |               |
 | `jira_absence_worklog_description`   | Description for absence worklogs                                                            | `Absence`     |
 | `tempo_api_token`                    | Tempo API token                                                                             |               |
 | `notification_emails`                | List of emails to send notifications, e.g. `j.doe1@example.com,j.doe2@example.com`          |               |
